@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adarsh Video Graphy - A Cinematic Experience</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js for interactivity -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Custom Tailwind Configuration & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': {
+                            '50': '#eef6ff',
+                            '100': '#d9eaff',
+                            '200': '#badfff',
+                            '300': '#8cc6ff',
+                            '400': '#5aa8ff',
+                            '500': '#368eff',
+                            '600': '#1b72f5',
+                            '700': '#115ed8',
+                            '800': '#134cb0',
+                            '900': '#15418d',
+                            '950': '#122b5a',
+                            // Light color based on user request #0f2f5f
+                            'primary': '#2f5f8f', 
+                            'light': '#e0f2fe', // sky-100
+                            'dark': '#0c4a6e'   // sky-800
+                        },
+                        'brand-pink': '#ec4899' // For the glow effect
+                    },
+                    fontFamily: {
+                        'sans': ['Poppins', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Base styles */
+        body {
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            color: #1e293b; /* slate-800 */
+            font-weight: 800;
+        }
+
+        /* --- HERO SLIDESHOW (FIXED) --- */
+        .hero-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .hero-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transform: scale(1.1);
+            /* Total duration is now 24s */
+            animation: crossfade 24s linear infinite;
+        }
+        @keyframes crossfade {
+            0% { opacity: 0; transform: scale(1.1) rotate(0.5deg); }
+            /* Fade In */
+            4% { opacity: 1; }
+            /* Hold */
+            25% { opacity: 1; transform: scale(1) rotate(0deg); }
+            /* Fade Out */
+            29% { opacity: 0; }
+            100% { opacity: 0; }
+        }
+        /* Stagger the animations for each slide */
+        .hero-slide:nth-child(1) { animation-delay: 0s; }
+        .hero-slide:nth-child(2) { animation-delay: 6s; } /* Starts at 6s */
+        .hero-slide:nth-child(3) { animation-delay: 12s; } /* Starts at 12s */
+        .hero-slide:nth-child(4) { animation-delay: 18s; } /* Starts at 18s */
+        
+        /* Interactive Card Glow Effect (Pink) */
+        .interactive-glow-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .interactive-glow-card:before {
+            content: '';
+            position: absolute;
+            left: var(--x);
+            top: var(--y);
+            transform: translate(-50%, -50%);
+            width: 0px;
+            height: 0px;
+            background: radial-gradient(circle closest-side, #ec4899, transparent); /* Pink glow color */
+            transition: width 0.4s, height 0.4s;
+            opacity: 0.25; /* Made slightly more visible */
+        }
+        .interactive-glow-card:hover:before {
+            width: 500px;
+            height: 500px;
+        }
+
+        /* On-scroll reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Enhanced Gallery Item Style */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem; /* 12px */
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+        .gallery-item img {
+            transition: transform 0.4s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        .gallery-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+        }
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+        .gallery-item .overlay-text {
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+            transform: translateY(15px);
+            opacity: 0;
+            transition: transform 0.3s ease 0.1s, opacity 0.3s ease 0.1s;
+        }
+        .gallery-item:hover .overlay-text {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .btn-gradient {
+            background-image: linear-gradient(to right, #ec4899, #8b5cf6);
+        }
+
+        /* Custom style for the FAQ accordion */
+        [x-cloak] { display: none !important; }
+
+    </style>
+    <style>
+    /* Pop-out animation for Craft Section Images */
+    .equipment-img-wrapper {
+        overflow: hidden;
+        border-radius: 0.75rem; /* 12px */
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        transition: transform 0.3s ease; /* Add transition to the wrapper */
+    }
+    
+    .equipment-img-wrapper:hover {
+        transform: translateY(-8px); /* Lifts the whole card slightly */
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .equipment-img-wrapper img {
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .equipment-img-wrapper:hover img {
+        transform: scale(1.15) rotate(2deg);
+    }
+</style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Header -->
+    <header x-data="{ mobileMenuOpen: false }" class="bg-white/80 backdrop-blur-lg fixed w-full z-50 transition-all duration-300 shadow-sm">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <a href="#" class="text-2xl sm:text-3xl font-black uppercase tracking-wider flex items-center transition-transform hover:scale-105">
+                    <span class="text-slate-800">Adarsh</span>
+                    <span class="text-transparent bg-clip-text btn-gradient mx-1">Video</span>
+                    <span class="text-slate-800">Graphy</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#services" class="text-slate-600 hover:text-brand-blue-primary font-semibold transition-colors px-4 py-2 rounded-md hover:bg-slate-100">Services</a>
+                    <a href="#equipment" class="text-slate-600 hover:text-brand-blue-primary font-semibold transition-colors px-4 py-2 rounded-md hover:bg-slate-100">Our Gear</a>
+                    <a href="#gallery" class="text-slate-600 hover:text-brand-blue-primary font-semibold transition-colors px-4 py-2 rounded-md hover:bg-slate-100">Gallery</a>
+                    <a href="#contact" class="px-6 py-2 text-white btn-gradient rounded-full hover:shadow-lg hover:shadow-pink-500/50 transition-all hover:scale-105 font-semibold">Book Now</a>
+                </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-slate-800 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Nav -->
+            <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" x-transition class="md:hidden mt-4 space-y-2 bg-white/95 p-4 rounded-lg shadow-xl border">
+                <a href="#services" @click="mobileMenuOpen = false" class="block text-slate-700 hover:text-brand-blue-primary transition-colors py-2 px-3 rounded-md hover:bg-slate-100 font-semibold">Services</a>
+                <a href="#equipment" @click="mobileMenuOpen = false" class="block text-slate-700 hover:text-brand-blue-primary transition-colors py-2 px-3 rounded-md hover:bg-slate-100 font-semibold">Our Gear</a>
+                <a href="#gallery" @click="mobileMenuOpen = false" class="block text-slate-700 hover:text-brand-blue-primary transition-colors py-2 px-3 rounded-md hover:bg-slate-100 font-semibold">Gallery</a>
+                <a href="#contact" @click="mobileMenuOpen = false" class="block mt-2 px-5 py-3 text-white btn-gradient rounded-full w-full text-center font-semibold">Book Now</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="h-screen flex items-center justify-center text-center text-white relative overflow-hidden">
+            <!-- Slideshow Container -->
+            <div class="hero-slideshow">
+                <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=2070&auto=format&fit=crop');"></div>
+                <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop');"></div>
+                <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');"></div>
+                <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1593096322908-d1685568c8aa?q=80&w=1932&auto=format&fit=crop');"></div>
+            </div>
+
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="container mx-auto px-6 z-10">
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black uppercase reveal text-white">Book Your Perfect Event</h1>
+                <p class="text-xl md:text-2xl mt-4 max-w-3xl mx-auto font-light reveal text-slate-200" style="transition-delay: 0.2s;">Full-service videography, DJ, lighting, and decor for weddings, parties, and anniversaries.</p>
+                <a href="#contact" class="mt-8 inline-block btn-gradient text-white font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-pink-500/40 hover:shadow-xl hover:shadow-pink-500/60 transition-all duration-300 transform hover:scale-110 reveal" style="transition-delay: 0.4s;">
+                    Get A Free Quote
+                </a>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-20 lg:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4 reveal">Our Signature Services</h2>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-16 reveal">We provide everything you need to make your event unforgettable. Book any service individually or as a complete package.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Service Card 1 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal border-t-4 border-brand-blue-400">
+                        <h3 class="text-3xl font-bold text-brand-blue-primary mb-4">Cinematic Videography</h3>
+                        <p class="text-slate-600">Full event coverage for weddings, corporate events, and personal milestones, capturing every moment in stunning 4K.</p>
+                    </div>
+                    <!-- Service Card 2 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal border-t-4 border-brand-blue-400" style="transition-delay: 0.2s;">
+                        <h3 class="text-3xl font-bold text-brand-blue-primary mb-4">Pro DJ & Sound</h3>
+                        <p class="text-slate-600">Electrifying DJ sets with tour-grade sound systems that guarantee an unforgettable party atmosphere for any occasion.</p>
+                    </div>
+                    <!-- Service Card 3 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 reveal border-t-4 border-brand-blue-400" style="transition-delay: 0.4s;">
+                        <h3 class="text-3xl font-bold text-brand-blue-primary mb-4">Decor & Lighting</h3>
+                        <p class="text-slate-600">Transform your venue with creative lighting, floral arrangements, and bespoke decorations for the perfect ambiance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- NEW: Equipment Section -->
+        <section id="equipment" class="py-20 lg:py-32 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 reveal">The Tools of Our Craft</h2>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-16 reveal">We use industry-leading equipment to deliver flawless results every time.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 text-center">
+            
+            <!-- Equipment 1: Camera -->
+            <div class="reveal">
+                <div class="equipment-img-wrapper mb-6">
+                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1964&auto=format&fit=crop" class="w-full h-64 object-cover" alt="Professional Cinema Camera" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Camera';">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">4K Cinema Cameras</h3>
+                <p class="text-slate-600">For breathtaking, high-resolution video that captures every detail.</p>
+            </div>
+
+            <!-- Equipment 2: DJ Floor -->
+            <div class="reveal" style="transition-delay: 0.2s;">
+                <div class="equipment-img-wrapper mb-6">
+                    <img src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?q=80&w=2070&auto=format&fit=crop" class="w-full h-64 object-cover" alt="DJ Decks and Mixer" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=DJ+Setup';">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Professional DJ Decks</h3>
+                <p class="text-slate-600">Top-tier audio equipment for crystal-clear sound and non-stop music.</p>
+            </div>
+
+            <!-- Equipment 3: Lighting -->
+            <div class="reveal" style="transition-delay: 0.4s;">
+                <div class="equipment-img-wrapper mb-6">
+                    <img src="https://images.unsplash.com/photo-1630381962685-b2c8dbe97ca2?q=80&w=1971&auto=format&fit=crop" class="w-full h-64 object-cover" alt="Event Lighting Decoration" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Lighting';">
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Ambient & Stage Lighting</h3>
+                <p class="text-slate-600">From elegant uplighting to dynamic stage effects, we set the perfect mood.</p>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-20 lg:py-32">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-16 reveal">A Glimpse of Our Creations</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Column 1 -->
+                    <div class="grid gap-4">
+                        <div class="reveal gallery-item" style="transition-delay: 0.1s;">
+                            <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1593096322908-d1685568c8aa?q=80&w=1932&auto=format&fit=crop" alt="Marriage Ceremony" onerror="this.onerror=null;this.src='https://placehold.co/400x600/eee/333?text=Marriage';">
+                            <div class="overlay"><p class="overlay-text">Elegant Weddings</p></div>
+                        </div>
+                        <div class="reveal gallery-item" style="transition-delay: 0.2s;">
+                            <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=2070&auto=format&fit=crop" alt="Birthday Celebration" onerror="this.onerror=null;this.src='https://placehold.co/400x400/eee/333?text=Birthday';">
+                            <div class="overlay"><p class="overlay-text">Vibrant Parties</p></div>
+                        </div>
+                    </div>
+                    <!-- Column 2 -->
+                    <div class="grid gap-4">
+                        <div class="reveal gallery-item" style="transition-delay: 0.3s;">
+                            <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=2070&auto=format&fit=crop" alt="Anniversary Dance" onerror="this.onerror=null;this.src='https://placehold.co/400x500/eee/333?text=Anniversary';">
+                            <div class="overlay"><p class="overlay-text">Joyful Anniversaries</p></div>
+                        </div>
+                        <div class="reveal gallery-item" style="transition-delay: 0.4s;">
+                            <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1606216836560-25cf33c04b0d?q=80&w=1932&auto=format&fit=crop" alt="Stage Decoration" onerror="this.onerror=null;this.src='https://placehold.co/400x600/eee/333?text=Decor';">
+                            <div class="overlay"><p class="overlay-text">Stunning Decor</p></div>
+                        </div>
+                    </div>
+                    <!-- Column 3 -->
+                    <div class="grid gap-4">
+                        <div class="reveal gallery-item" style="transition-delay: 0.5s;">
+                            <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?q=80&w=2070&auto=format&fit=crop" alt="Couple Portrait" onerror="this.onerror=null;this.src='https://placehold.co/400x600/eee/333?text=Portrait';">
+                             <div class="overlay"><p class="overlay-text">Timeless Portraits</p></div>
+                        </div>
+                        <div class="reveal gallery-item" style="transition-delay: 0.6s;">
+                             <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop" alt="Wedding Details" onerror="this.onerror=null;this.src='https://placehold.co/400x400/eee/333?text=Details';">
+                             <div class="overlay"><p class="overlay-text">Intricate Details</p></div>
+                        </div>
+                    </div>
+                    <!-- Column 4 -->
+                    <div class="grid gap-4">
+                        <div class="reveal gallery-item" style="transition-delay: 0.7s;">
+                             <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop" alt="Live Concert" onerror="this.onerror=null;this.src='https://placehold.co/400x500/eee/333?text=Concert';">
+                             <div class="overlay"><p class="overlay-text">Live Events</p></div>
+                        </div>
+                        <div class="reveal gallery-item" style="transition-delay: 0.8s;">
+                            <img class="h-auto max-w-full" src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2070&auto=format&fit=crop" alt="DJ Performance" onerror="this.onerror=null;this.src='https://placehold.co/400x600/eee/333?text=DJ';">
+                            <div class="overlay"><p class="overlay-text">Epic DJ Nights</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="py-20 lg:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 reveal">What Our Clients Say</h2>
+                    <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-16 reveal">Our success is measured by your satisfaction.</p>
+                </div>
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-slate-50 border border-slate-200 p-8 rounded-xl reveal shadow-sm">
+                        <p class="text-slate-700 mb-6 font-medium">"Adarsh and his team were phenomenal. They captured our wedding day more beautifully than we could have ever imagined. The final film is a treasure we'll cherish forever."</p>
+                        <div class="flex items-center">
+                            <img class="w-12 h-12 rounded-full mr-4" src="https://i.pravatar.cc/150?img=1" alt="Avatar of Priya & Rohan">
+                            <div>
+                                <p class="font-bold text-slate-800">Priya & Rohan</p>
+                                <p class="text-sm text-slate-500">Wedding Client</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="bg-slate-50 border border-slate-200 p-8 rounded-xl reveal shadow-sm" style="transition-delay: 0.2s;">
+                        <p class="text-slate-700 mb-6 font-medium">"The best DJ service in town! They kept the energy high all night for our corporate event. The lighting and sound were top-notch. Highly recommended!"</p>
+                        <div class="flex items-center">
+                            <img class="w-12 h-12 rounded-full mr-4" src="https://i.pravatar.cc/150?img=5" alt="Avatar of Sameer Verma">
+                            <div>
+                                <p class="font-bold text-slate-800">Sameer Verma</p>
+                                <p class="text-sm text-slate-500">Corporate Event Manager</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="bg-slate-50 border border-slate-200 p-8 rounded-xl reveal shadow-sm" style="transition-delay: 0.4s;">
+                        <p class="text-slate-700 mb-6 font-medium">"They transformed our backyard for my daughter's birthday party. The decorations and lighting created a magical atmosphere. Absolutely stunning work!"</p>
+                        <div class="flex items-center">
+                            <img class="w-12 h-12 rounded-full mr-4" src="https://i.pravatar.cc/150?img=8" alt="Avatar of Anjali Mehta">
+                            <div>
+                                <p class="font-bold text-slate-800">Anjali Mehta</p>
+                                <p class="text-sm text-slate-500">Birthday Party Host</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 lg:py-32">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4 reveal">Let's Create Magic Together</h2>
+                    <p class="text-lg text-slate-600 mb-12 reveal">Tell us about your event, and we'll craft a custom package just for you.</p>
+                </div>
+                <div class="max-w-4xl mx-auto bg-white rounded-2xl p-8 md:p-12 shadow-2xl reveal interactive-glow-card"
+                     @mousemove="e => { e.currentTarget.style.setProperty('--x', `${e.offsetX}px`); e.currentTarget.style.setProperty('--y', `${e.offsetY}px`); }">
+                    <form action="https://formspree.io/f/xeokknrz" method="POST" class="relative z-10">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <input type="text" name="name" placeholder="Your Name" class="w-full bg-slate-100 text-slate-700 p-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-pink focus:outline-none transition-all" required>
+                            <input type="email" name="email" placeholder="Your Email" class="w-full bg-slate-100 text-slate-700 p-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-pink focus:outline-none transition-all" required>
+                        </div>
+                        <div class="mt-6">
+                            <input type="text" name="event_type" placeholder="Event Type (e.g., Wedding, Birthday)" class="w-full bg-slate-100 text-slate-700 p-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-pink focus:outline-none transition-all">
+                        </div>
+                        <div class="mt-6">
+                            <textarea name="message" placeholder="Tell us more about your event..." rows="5" class="w-full bg-slate-100 text-slate-700 p-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-pink focus:outline-none transition-all" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="mt-8 inline-block btn-gradient text-white font-bold text-lg px-10 py-4 rounded-full shadow-lg shadow-pink-500/40 hover:shadow-xl hover:shadow-pink-500/60 transition-all duration-300 transform hover:scale-110">
+                                Send Inquiry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 relative pt-20 pb-12 overflow-hidden">
+        <div class="absolute -bottom-1/2 -left-1/4 w-1/2 h-full bg-slate-800/50 rounded-full blur-3xl"></div>
+        <div class="absolute -top-1/2 -right-1/4 w-1/2 h-full bg-brand-blue-900/30 rounded-full blur-3xl"></div>
+        <div class="container mx-auto px-6 relative z-10">
+           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
+               <div class="lg:col-span-1">
+                    <a href="#" class="text-2xl font-black uppercase tracking-wider flex items-center justify-center md:justify-start text-white">
+                       <span class="text-slate-100">Adarsh</span>
+                       <span class="text-brand-blue-400 mx-1">Video</span>
+                       <span class="text-slate-100">Graphy</span>
+                   </a>
+                   <p class="mt-4 text-sm text-slate-400">Your vision, our craft. Creating unforgettable moments.</p>
+                   <div class="mt-6 flex space-x-5 justify-center md:justify-start">
+                        <a href="#" class="hover:text-brand-blue-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46,6C21.69,6.35 20.86,6.58 20,6.69C20.88,6.16 21.56,5.32 21.88,4.31C21.05,4.81 20.13,5.16 19.16,5.36C18.37,4.5 17.26,4 16,4C13.65,4 11.73,5.92 11.73,8.29C11.73,8.63 11.77,8.96 11.84,9.28C8.28,9.09 5.11,7.38 3,4.79C2.63,5.42 2.42,6.16 2.42,6.94C2.42,8.43 3.17,9.75 4.33,10.5C3.62,10.5 2.96,10.3 2.38,10C2.38,10 2.38,10 2.38,10.03C2.38,12.11 3.86,13.85 5.82,14.24C5.46,14.34 5.08,14.39 4.69,14.39C4.42,14.39 4.15,14.36 3.89,14.31C4.43,16 6,17.26 7.89,17.29C6.43,18.45 4.58,19.13 2.56,19.13C2.22,19.13 1.88,19.11 1.54,19.07C3.44,20.29 5.7,21 8.12,21C16,21 20.33,14.46 20.33,8.79C20.33,8.6 20.33,8.42 20.32,8.23C21.16,7.63 21.88,6.87 22.46,6Z"></path></svg></a>
+                        <a href="#" class="hover:text-brand-blue-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.8,2H6.2C3.9,2,2,3.9,2,6.2v11.7C2,20.1,3.9,22,6.2,22h11.7c2.3,0,4.1-1.9,4.1-4.1V6.2C22,3.9,20.1,2,17.8,2z M12,17.6c-3.1,0-5.6-2.5-5.6-5.6s2.5-5.6,5.6-5.6s5.6,2.5,5.6,5.6S15.1,17.6,12,17.6z M18,7.8c-0.8,0-1.5-0.7-1.5-1.5s0.7-1.5,1.5-1.5s1.5,0.7,1.5,1.5S18.8,7.8,18,7.8z"></path></svg></a>
+                        <a href="#" class="hover:text-brand-blue-400 transition-colors"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19,3H5C3.89,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M8.5,18H6V9H8.5V18M17.5,18H15V13.75C15,12.92 14.71,12.25 13.75,12.25C12.79,12.25 12.25,12.83 12,13.5V18H9.5V9H12V10.25C12.44,9.45 13.33,9 14.5,9C16.43,9 17.5,10.33 17.5,12.5V18Z"></path></svg></a>
+                    </div>
+               </div>
+               <div>
+                   <h3 class="font-bold text-white tracking-wider uppercase">Services</h3>
+                   <nav class="mt-4 space-y-2 text-sm">
+                       <a href="#services" class="block hover:text-brand-blue-400 transition-colors">Videography</a>
+                       <a href="#services" class="block hover:text-brand-blue-400 transition-colors">DJ & Sound</a>
+                       <a href="#services" class="block hover:text-brand-blue-400 transition-colors">Decor & Lighting</a>
+                       <a href="#gallery" class="block hover:text-brand-blue-400 transition-colors">Event Packages</a>
+                   </nav>
+               </div>
+                <div>
+                   <h3 class="font-bold text-white tracking-wider uppercase">Navigate</h3>
+                   <nav class="mt-4 space-y-2 text-sm">
+                       <a href="#" class="block hover:text-brand-blue-400 transition-colors">Home</a>
+                       <a href="#gallery" class="block hover:text-brand-blue-400 transition-colors">Gallery</a>
+                       <a href="#testimonials" class="block hover:text-brand-blue-400 transition-colors">Testimonials</a>
+                       <a href="#contact" class="block hover:text-brand-blue-400 transition-colors">Contact Us</a>
+                   </nav>
+               </div>
+               <div>
+                    <h3 class="font-bold text-white tracking-wider uppercase">Get In Touch</h3>
+                    <div class="mt-4 space-y-3 text-sm">
+                        <p>Mirzapur, Uttar Pradesh, India</p>
+                        <a href="mailto:contact@adarshgraphy.com" class="block hover:text-brand-blue-400 transition-colors">contact@adarshgraphy.com</a>
+                        <a href="tel:+911234567890" class="block hover:text-brand-blue-400 transition-colors">+91 123 456 7890</a>
+                    </div>
+               </div>
+           </div>
+           <div class="mt-12 pt-8 border-t border-slate-700/50 text-center text-sm">
+               <p>&copy; 2025 Adarsh Video Graphy. All Rights Reserved. Designed with ❤️</p>
+           </div>
+        </div>
+   </footer>
+    
+    <script>
+        // JS for on-scroll reveal animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('reveal-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
