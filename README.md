@@ -39,7 +39,7 @@ Live demo: ->https://adarshvideography.netlify.app/
 - **Email**: ambuj20maurya@gmail.com  
 - **Phone**: +91 9369572534  
 - **Linkedin**: [Linkedin.com/21ambuj](https://linkedin.com/in/21ambuj)  
-- Feel free to reach out for questions, feedback, or Project Work.
+- Feel free to contact for roject related query, feedback, or Project Work.
 
 
 
